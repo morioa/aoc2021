@@ -12,10 +12,10 @@ class Day1 extends Common
      * Run method executed at script start
      * @param $dataFile
      */
-    function run($dataFile)
+    public function run($dataFile)
     {
         try {
-            self::log('Started ' . __CLASS__);
+            $this->log('Started ' . __CLASS__);
 
             $data = $this->loadData($dataFile);
 
@@ -24,7 +24,7 @@ class Day1 extends Common
                 : 'countDepthRangeIncreases';
             $this->$func($data);
         } catch (Exception $e) {
-            self::log($e);
+            $this->log($e);
             exit(1);
         }
     }
@@ -33,7 +33,7 @@ class Day1 extends Common
      * Count how many times the depth increases
      * @param $data
      */
-    function countDepthIncreases($data)
+    public function countDepthIncreases($data)
     {
         $increaseCount = 0;
         $prevDepth = null;
@@ -45,14 +45,14 @@ class Day1 extends Common
             $prevDepth = $depth;
         }
 
-        self::log("Depth increased {$increaseCount} times");
+        $this->log("Depth increased {$increaseCount} times");
     }
 
     /**
      * Count how many times the depth increases by range
      * @param $data
      */
-    function countDepthRangeIncreases($data)
+    public function countDepthRangeIncreases($data)
     {
         $dataCount = count($data);
 
@@ -72,6 +72,6 @@ class Day1 extends Common
             $prevRangeSum = $rangeSum;
         }
 
-        self::log("Depth range increased {$increaseCount} times");
+        $this->log("Depth range increased {$increaseCount} times");
     }
 }

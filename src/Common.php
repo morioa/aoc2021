@@ -11,7 +11,7 @@ class Common
      * Output standard log message
      * @param $msg
      */
-    static function log($msg)
+    public function log($msg)
     {
         if (is_a($msg, 'Exception')) {
             $msg = "ERROR: {$msg->getMessage()}";
@@ -31,9 +31,9 @@ class Common
      * @param string $lineDelimiter
      * @return false|string[]
      */
-    function loadData($dataFile, $lineDelimiter = "\n")
+    public function loadData($dataFile, $lineDelimiter = "\n")
     {
-        self::log('Loading input data');
+        $this->log('Loading input data');
         return explode($lineDelimiter, trim(file_get_contents($dataFile)));
     }
 
@@ -42,7 +42,7 @@ class Common
      * @return int
      * @throws Exception
      */
-    static function partInputRequest()
+    public function partInputRequest()
     {
         print "\nWhich part would you like to run? (1-2) : ";
         $handle = fopen('php://stdin', 'r');
@@ -57,12 +57,10 @@ class Common
     /**
      * Method to execute upon script shutdown
      */
-    static function done()
+    public static function done()
     {
-        self::log('Done');
+        (new self)->log('Done');
     }
 }
 
-register_shutdown_function(function(){
-    Common::done();
-});
+register_shutdown_function(['Common', 'done']);

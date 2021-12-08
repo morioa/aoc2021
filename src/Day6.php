@@ -20,15 +20,15 @@ class Day6 extends Common
      * Run method executed at script start
      * @param $dataFile
      */
-    function run($dataFile)
+    public function run($dataFile)
     {
         try {
-            self::log('Started ' . __CLASS__);
+            $this->log('Started ' . __CLASS__);
 
             $this->init($this->loadData($dataFile));
             $this->runCycles(constant(__CLASS__ . '::PART_' . $this->partInputRequest() . '_CYCLES'));
         } catch (Exception $e) {
-            self::log($e);
+            $this->log($e);
             exit(1);
         }
     }
@@ -37,7 +37,7 @@ class Day6 extends Common
      * Initialize data into class member variables
      * @param $data
      */
-    function init($data)
+    public function init($data)
     {
         $fish = explode(',', $data[0]);
         for ($i = 0; $i <= self::GESTATION_CHILD; $i++) {
@@ -48,16 +48,16 @@ class Day6 extends Common
         }
 
         $this->initialFishCount = array_sum($this->fish);
-        self::log(['Initial fish' => $this->fish, 'Initial fish count' => $this->initialFishCount]);
+        $this->log(['Initial fish' => $this->fish, 'Initial fish count' => $this->initialFishCount]);
     }
 
     /**
      * Perform iteration through cycles and output number of fish when complete
      * @param $cycles
      */
-    function runCycles($cycles)
+    public function runCycles($cycles)
     {
-        self::log("Running {$cycles} cycles");
+        $this->log("Running {$cycles} cycles");
 
         $fishCounters = count($this->fish);
         for ($i = 0; $i < $cycles; $i++) {
@@ -84,7 +84,7 @@ class Day6 extends Common
 
         ksort($this->fish);
         $fishCount = array_sum($this->fish);
-        self::log(['Final fish' => $this->fish, 'Final fish count' => $fishCount]);
-        self::log("Fish count: {$fishCount}");
+        $this->log(['Final fish' => $this->fish, 'Final fish count' => $fishCount]);
+        $this->log("Fish count: {$fishCount}");
     }
 }

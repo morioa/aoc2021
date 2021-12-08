@@ -12,10 +12,10 @@ class Day2 extends Common
      * Run method executed at script start
      * @param $dataFile
      */
-    function run($dataFile)
+    public function run($dataFile)
     {
         try {
-            self::log('Started ' . __CLASS__);
+            $this->log('Started ' . __CLASS__);
 
             $data = $this->loadData($dataFile);
 
@@ -24,7 +24,7 @@ class Day2 extends Common
                 : 'findPositionUsingAim';
             $this->$func($data);
         } catch (Exception $e) {
-            self::log($e);
+            $this->log($e);
             exit(1);
         }
     }
@@ -34,7 +34,7 @@ class Day2 extends Common
      * @param $data
      * @throws Exception
      */
-    function findPosition($data)
+    public function findPosition($data)
     {
         $x = 0;
         $y = 0;
@@ -62,9 +62,9 @@ class Day2 extends Common
 
         $pos = $x * $y;
 
-        self::log("Horizontal: {$x}");
-        self::log("Depth: {$y}");
-        self::log("Calculated Position: {$pos}");
+        $this->log("Horizontal: {$x}");
+        $this->log("Depth: {$y}");
+        $this->log("Calculated Position: {$pos}");
     }
 
     /**
@@ -72,7 +72,7 @@ class Day2 extends Common
      * @param $data
      * @throws Exception
      */
-    function findPositionUsingAim($data)
+    public function findPositionUsingAim($data)
     {
         $x = 0; // horizontal
         $y = 0; // depth
@@ -102,8 +102,8 @@ class Day2 extends Common
 
         $pos = $x * $y;
 
-        self::log("Horizontal: {$x}");
-        self::log("Depth: {$y}");
-        self::log("Calculated Position: {$pos}");
+        $this->log("Horizontal: {$x}");
+        $this->log("Depth: {$y}");
+        $this->log("Calculated Position: {$pos}");
     }
 }

@@ -15,17 +15,17 @@ class Day7 extends Common
      * Run method executed at script start
      * @param $dataFile
      */
-    function run($dataFile)
+    public function run($dataFile)
     {
         try {
-            self::log('Started ' . __CLASS__);
+            $this->log('Started ' . __CLASS__);
 
             $this->init($this->loadData($dataFile));
             $part = $this->partInputRequest();
             $this->align($part === 2);
             $this->alignBruteForce($part === 2);
         } catch (Exception $e) {
-            self::log($e);
+            $this->log($e);
             exit(1);
         }
     }
@@ -34,11 +34,11 @@ class Day7 extends Common
      * Initialize data into class member variables
      * @param $data
      */
-    function init($data)
+    public function init($data)
     {
         $this->crabs = explode(',', $data[0]);
         sort($this->crabs);
-        //self::log(['Crabs' => $this->crabs]);
+        //$this->log(['Crabs' => $this->crabs]);
     }
 
     /**
@@ -47,13 +47,13 @@ class Day7 extends Common
      *   - mean   (if increased fuel cost per step of shift)
      * @param false $fuelCostsIncrease
      */
-    function align($fuelCostsIncrease = false)
+    public function align($fuelCostsIncrease = false)
     {
         $count = count($this->crabs);
         $optimumFunc = ($fuelCostsIncrease) ? 'mean' : 'median';
         $optimumPos = $this->$optimumFunc();
-        self::log(['count' => $count, 'optimum func' => $optimumFunc, 'optimum pos' => $optimumPos]);
-        self::log(['mean' => $this->mean(), 'median' => $this->median()]);
+        $this->log(['count' => $count, 'optimum func' => $optimumFunc, 'optimum pos' => $optimumPos]);
+        $this->log(['mean' => $this->mean(), 'median' => $this->median()]);
 
         $fuel = 0;
         foreach ($this->crabs as $pos) {
@@ -65,20 +65,20 @@ class Day7 extends Common
                 for ($j = 1; $j <= $shift; $j++) {
                     $fuelForPos += $j;
                 }
-                //self::log("Fuel for pos: {$fuelForPos}");
+                //$this->log("Fuel for pos: {$fuelForPos}");
 
                 $fuel += $fuelForPos;
             }
         }
-        self::log("Optimal position (" . __FUNCTION__ . "): {$optimumPos}");
-        self::log("Fuel consumption (" . __FUNCTION__ . "): {$fuel}");
+        $this->log("Optimal position (" . __FUNCTION__ . "): {$optimumPos}");
+        $this->log("Fuel consumption (" . __FUNCTION__ . "): {$fuel}");
     }
 
     /**
      * Use brute force to calculate fuel consumption
      * @param false $fuelCostsIncrease
      */
-    function alignBruteForce($fuelCostsIncrease = false)
+    public function alignBruteForce($fuelCostsIncrease = false)
     {
         $uniquePositions = array_unique($this->crabs);
         $uniquePositionsCount = count($uniquePositions);
@@ -105,15 +105,15 @@ class Day7 extends Common
         $firstKey = array_key_first($this->fuelCosts);
         list($pos, $cost) = [$firstKey, $this->fuelCosts[$firstKey]];
 
-        self::log("Optimal position (" . __FUNCTION__ . "): {$pos}");
-        self::log("Fuel consumption (" . __FUNCTION__ . "): {$cost}");
+        $this->log("Optimal position (" . __FUNCTION__ . "): {$pos}");
+        $this->log("Fuel consumption (" . __FUNCTION__ . "): {$cost}");
     }
 
     /**
      * Find the mean (average) of the crab positions
      * @return false|float
      */
-    function mean()
+    public function mean()
     {
         $count = count($this->crabs);
         return floor(array_sum($this->crabs) / $count);
@@ -123,7 +123,7 @@ class Day7 extends Common
      * Find the median (middle value) of the crab positions
      * @return mixed
      */
-    function median()
+    public function median()
     {
         $count = count($this->crabs);
         $key = floor($count / 2);

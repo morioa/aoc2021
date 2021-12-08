@@ -16,16 +16,16 @@ class Day4 extends Common
      * Run method executed at script start
      * @param $dataFile
      */
-    function run($dataFile)
+    public function run($dataFile)
     {
         try {
-            self::log('Started ' . __CLASS__);
+            $this->log('Started ' . __CLASS__);
 
             $this->init($this->loadData($dataFile, "\n\n"));
             $this->draw($this->partInputRequest() === 1);
             $this->calcFinalScore();
         } catch (Exception $e) {
-            self::log($e);
+            $this->log($e);
             exit(1);
         }
     }
@@ -34,7 +34,7 @@ class Day4 extends Common
      * Initialize data into class member variables
      * @param $data
      */
-    function init($data)
+    public function init($data)
     {
         $this->numbers = [
             'drawOrder' => explode(',', array_shift($data)),
@@ -73,15 +73,15 @@ class Day4 extends Common
             $this->boards[$i]['matched'] = array_pad([], $boardCombosCount, []);
         }
 
-        //self::log(['Numbers' => $this->numbers]);
-        //self::log(['Boards' => $this->boards]);
+        //$this->log(['Numbers' => $this->numbers]);
+        //$this->log(['Boards' => $this->boards]);
     }
 
     /**
      * Loop through numbers in draw order and determine winner
      * @param false $stopOnFirstWin
      */
-    function draw($stopOnFirstWin = false)
+    public function draw($stopOnFirstWin = false)
     {
         $boardsCount = count($this->boards);
 
@@ -114,7 +114,7 @@ class Day4 extends Common
     /**
      * Calculate the final score for the winner
      */
-    function calcFinalScore()
+    public function calcFinalScore()
     {
         $winningNumber = $this->winners['lastWinningNumberDrawn'];
         $winningBoard = $this->winners['lastWinner']['board'];
@@ -123,17 +123,17 @@ class Day4 extends Common
         $winningNumberIndex = array_search($winningNumber, $this->numbers['drawn']);
         $numbersDrawnTilFinalWin = array_slice($this->numbers['drawn'], 0, ($winningNumberIndex + 1));
 
-        //self::log(['Boards' => $this->boards]);
-        self::log("Last drawn winning number: {$winningNumber}");
-        self::log("Winning board: {$winningBoard}");
-        self::log("Winning combo: " . implode(', ', $this->boards[$winningBoard]['combos'][$winningCombo]));
-        self::log("Winning board numbers: " . implode(', ', $this->boards[$winningBoard]['numbers']));
+        //$this->log(['Boards' => $this->boards]);
+        $this->log("Last drawn winning number: {$winningNumber}");
+        $this->log("Winning board: {$winningBoard}");
+        $this->log("Winning combo: " . implode(', ', $this->boards[$winningBoard]['combos'][$winningCombo]));
+        $this->log("Winning board numbers: " . implode(', ', $this->boards[$winningBoard]['numbers']));
 
         $unmarkedNumbers = array_diff($this->boards[$winningBoard]['numbers'], $numbersDrawnTilFinalWin);
-        self::log("Winning board unmarked numbers: " . implode(', ', $unmarkedNumbers));
+        $this->log("Winning board unmarked numbers: " . implode(', ', $unmarkedNumbers));
 
         $unmarkedSum = array_sum($unmarkedNumbers);
         $score = $unmarkedSum * $winningNumber;
-        self::log("Score: {$score}");
+        $this->log("Score: {$score}");
     }
 }
