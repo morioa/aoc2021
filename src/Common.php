@@ -1,7 +1,7 @@
 <?php
 namespace AoC2021;
 
-use AoC2021\EscapeColors;
+use Bart\EscapeColors;
 use Exception;
 
 require_once __DIR__ . '/../config/config.php';

@@ -4,15 +4,74 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d751713988987e9331980363e24189ce",
-    "packages": [],
+    "content-hash": "5e9fc7fa254324afb5faa29631c370db",
+    "packages": [
+        {
+            "name": "box/bart",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/box/bart.git",
+                "reference": "ac382b4bf3ed330ff5fabace6d939788006a1094"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/box/bart/zipball/ac382b4bf3ed330ff5fabace6d939788006a1094",
+                "reference": "ac382b4bf3ed330ff5fabace6d939788006a1094",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "box/shmock": "1.0.0",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Bart": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin VanEvery",
+                    "email": "vaenvery@gmail.com",
+                    "homepage": "http://asheepapart.blogspot.com"
+                }
+            ],
+            "description": "Build and Release Tools for PHP",
+            "homepage": "http://github.com/box/bart",
+            "keywords": [
+                "bart",
+                "dependency injection",
+                "phpunit"
+            ],
+            "support": {
+                "issues": "https://github.com/box/bart/issues",
+                "source": "https://github.com/box/bart/tree/master"
+            },
+            "time": "2014-03-25T22:19:38+00:00"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.4.0"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.1.0"
 }

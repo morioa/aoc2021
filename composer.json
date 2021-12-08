@@ -1,7 +1,20 @@
 {
+  "name": "morioa/aoc2021",
+  "description": "A PHP approach to solving the Advent of Code 2021 challenge puzzles",
+  "homepage": "https://github.com/morioa/aoc2021",
+  "authors": [
+    {
+      "name": "Andrew Morio",
+      "email": "morioa@hotmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4.0",
+    "box/bart": "*"
+  },
   "autoload": {
     "psr-4": {
-      "AoC2021\\":"src/"
+      "AoC2021\\": "src/"
     }
   }
 }
