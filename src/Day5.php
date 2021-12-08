@@ -1,4 +1,8 @@
 <?php
+namespace AoC2021;
+
+use Exception;
+use ReflectionClass;
 
 /**
  * Class Day5
@@ -18,7 +22,7 @@ class Day5 extends Common
     public function run($dataFile)
     {
         try {
-            $this->log('Started ' . __CLASS__);
+            $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $this->init($this->loadData($dataFile), ($this->partInputRequest() === 1));
             $this->convertLinesToPoints();

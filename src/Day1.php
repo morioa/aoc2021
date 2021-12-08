@@ -1,4 +1,9 @@
 <?php
+namespace AoC2021;
+
+use AoC2021\Common;
+use Exception;
+use ReflectionClass;
 
 /**
  * Class Day1
@@ -15,7 +20,7 @@ class Day1 extends Common
     public function run($dataFile)
     {
         try {
-            $this->log('Started ' . __CLASS__);
+            $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $data = $this->loadData($dataFile);
 

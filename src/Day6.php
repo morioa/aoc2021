@@ -1,4 +1,8 @@
 <?php
+namespace AoC2021;
+
+use Exception;
+use ReflectionClass;
 
 /**
  * Class Day6
@@ -23,7 +27,7 @@ class Day6 extends Common
     public function run($dataFile)
     {
         try {
-            $this->log('Started ' . __CLASS__);
+            $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $this->init($this->loadData($dataFile));
             $this->runCycles(constant(__CLASS__ . '::PART_' . $this->partInputRequest() . '_CYCLES'));

@@ -1,4 +1,10 @@
 <?php
+namespace AoC2021;
+
+use AoC2021\EscapeColors;
+use Exception;
+
+require_once __DIR__ . '/../config/config.php';
 
 /**
  * Class Common
@@ -7,6 +13,7 @@
  */
 class Common
 {
+
     /**
      * Output standard log message
      * @param $msg
@@ -44,7 +51,7 @@ class Common
      */
     public function partInputRequest()
     {
-        print "\nWhich part would you like to run? (1-2) : ";
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich part would you like to run? (1-2) : ");
         $handle = fopen('php://stdin', 'r');
         $input = trim(fgets($handle));
         if (!in_array($input, [1, 2])) {
@@ -63,4 +70,4 @@ class Common
     }
 }
 
-register_shutdown_function(['Common', 'done']);
+register_shutdown_function(['AoC2021\Common', 'done']);

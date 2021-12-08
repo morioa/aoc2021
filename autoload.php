@@ -1,4 +1,5 @@
 <?php
+namespace AoC2021;
 
 /**
  * Class Autoloader
