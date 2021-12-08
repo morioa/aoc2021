@@ -22,14 +22,19 @@ class Run
     protected string $assetsPath;
     protected array $days;
 
+    /**
+     * Run constructor
+     */
     public function __construct()
     {
         $this->init();
     }
 
+    /**
+     * Initialize class member variables
+     */
     public function init()
     {
-
         // Set paths
         $this->srcPath = realpath(__DIR__ . '/../src/') . DIRECTORY_SEPARATOR;
         $this->assetsPath = realpath(__DIR__ . '/../assets/') . DIRECTORY_SEPARATOR;
@@ -42,6 +47,9 @@ class Run
         sort($this->days, SORT_NUMERIC);
     }
 
+    /**
+     * Begin the application
+     */
     public function start()
     {
         try {
@@ -86,6 +94,12 @@ class Run
         }
     }
 
+    /**
+     * Request day value from user
+     * @param $daysRange
+     * @return string
+     * @throws Exception
+     */
     function getDayInput($daysRange)
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? ({$daysRange}) : ");
@@ -98,6 +112,10 @@ class Run
         return $input;
     }
 
+    /**
+     * Get restart value from user
+     * @throws Exception
+     */
     function getRestartInput()
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? (y/n) : ");

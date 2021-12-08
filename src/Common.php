@@ -13,7 +13,6 @@ require_once __DIR__ . '/../config/config.php';
  */
 class Common
 {
-
     /**
      * Output standard log message
      * @param $msg
