@@ -19,11 +19,10 @@ class Day1 extends Common
 
             $data = $this->loadData($dataFile);
 
-            if ($this->partInputRequest() === 1) {
-                $this->countDepthIncreases($data);
-            } else {
-                $this->countDepthRangeIncreases($data);
-            }
+            $func = ($this->partInputRequest() === 1)
+                ? 'countDepthIncreases'
+                : 'countDepthRangeIncreases';
+            $this->$func($data);
         } catch (Exception $e) {
             self::log($e);
             exit(1);

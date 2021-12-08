@@ -19,11 +19,10 @@ class Day3 extends Common
 
             $data = $this->loadData($dataFile);
 
-            if ($this->partInputRequest() === 1) {
-                $this->calcPowerConsumption($data);
-            } else {
-                $this->calcLifeSupportRating($data);
-            }
+            $func = ($this->partInputRequest() === 1)
+                ? 'calcPowerConsumption'
+                : 'calcLifeSupportRating';
+            $this->$func($data);
         } catch (Exception $e) {
             self::log($e);
             exit(1);

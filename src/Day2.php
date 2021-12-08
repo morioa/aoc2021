@@ -19,11 +19,10 @@ class Day2 extends Common
 
             $data = $this->loadData($dataFile);
 
-            if ($this->partInputRequest() === 1) {
-                $this->findPosition($data);
-            } else {
-                $this->findPositionUsingAim($data);
-            }
+            $func = ($this->partInputRequest() === 1)
+                ? 'findPosition'
+                : 'findPositionUsingAim';
+            $this->$func($data);
         } catch (Exception $e) {
             self::log($e);
             exit(1);
