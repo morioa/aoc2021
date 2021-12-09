@@ -12,6 +12,9 @@ use ReflectionClass;
  */
 class Day2 extends Common
 {
+    const PART_1_TEST_RESULT = 150;
+    const PART_2_TEST_RESULT = 900;
+
     /**
      * Run method executed at script start
      * @param $dataFile
@@ -23,7 +26,9 @@ class Day2 extends Common
 
             $data = $this->loadData($dataFile);
 
-            $func = ($this->partInputRequest() === 1)
+            $this->init();
+
+            $func = ($this->part)
                 ? 'findPosition'
                 : 'findPositionUsingAim';
             $this->$func($data);
@@ -31,6 +36,15 @@ class Day2 extends Common
             $this->log($e);
             exit(1);
         }
+    }
+
+    /**
+     * Initialize class member variables
+     * @throws Exception
+     */
+    public function init()
+    {
+        $this->getPartInput();
     }
 
     /**
@@ -69,6 +83,10 @@ class Day2 extends Common
         $this->log("Horizontal: {$x}");
         $this->log("Depth: {$y}");
         $this->log("Calculated Position: {$pos}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $pos);
+        }
     }
 
     /**
@@ -109,5 +127,9 @@ class Day2 extends Common
         $this->log("Horizontal: {$x}");
         $this->log("Depth: {$y}");
         $this->log("Calculated Position: {$pos}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $pos);
+        }
     }
 }

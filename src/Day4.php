@@ -12,9 +12,12 @@ use ReflectionClass;
  */
 class Day4 extends Common
 {
-    protected $numbers = [];
-    protected $boards = [];
-    protected $winners = [];
+    const PART_1_TEST_RESULT = 4512;
+    const PART_2_TEST_RESULT = 1924;
+
+    protected array $numbers = [];
+    protected array $boards = [];
+    protected array $winners = [];
 
     /**
      * Run method executed at script start
@@ -26,7 +29,7 @@ class Day4 extends Common
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $this->init($this->loadData($dataFile, "\n\n"));
-            $this->draw($this->partInputRequest() === 1);
+            $this->draw($this->part === 1);
             $this->calcFinalScore();
         } catch (Exception $e) {
             $this->log($e);
@@ -37,6 +40,7 @@ class Day4 extends Common
     /**
      * Initialize data into class member variables
      * @param $data
+     * @throws Exception
      */
     public function init($data)
     {
@@ -79,6 +83,8 @@ class Day4 extends Common
 
         //$this->log(['Numbers' => $this->numbers]);
         //$this->log(['Boards' => $this->boards]);
+
+        $this->getPartInput();
     }
 
     /**
@@ -139,5 +145,9 @@ class Day4 extends Common
         $unmarkedSum = array_sum($unmarkedNumbers);
         $score = $unmarkedSum * $winningNumber;
         $this->log("Score: {$score}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $score);
+        }
     }
 }

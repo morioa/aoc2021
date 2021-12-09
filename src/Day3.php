@@ -12,6 +12,9 @@ use ReflectionClass;
  */
 class Day3 extends Common
 {
+    const PART_1_TEST_RESULT = 198;
+    const PART_2_TEST_RESULT = 230;
+
     /**
      * Run method executed at script start
      * @param $dataFile
@@ -23,7 +26,9 @@ class Day3 extends Common
 
             $data = $this->loadData($dataFile);
 
-            $func = ($this->partInputRequest() === 1)
+            $this->init();
+
+            $func = ($this->part === 1)
                 ? 'calcPowerConsumption'
                 : 'calcLifeSupportRating';
             $this->$func($data);
@@ -34,8 +39,18 @@ class Day3 extends Common
     }
 
     /**
+     * Initialize class member variables
+     * @throws Exception
+     */
+    public function init()
+    {
+        $this->getPartInput();
+    }
+
+    /**
      * Calculate the power consumption by finding gamma and epsilon values
      * @param $data
+     * @throws Exception
      */
     public function calcPowerConsumption($data)
     {
@@ -65,6 +80,10 @@ class Day3 extends Common
         $this->log("Gamma: {$gDecimal} ({$g})");
         $this->log("Epsilon: {$eDecimal} ({$e})");
         $this->log("Power consumption: {$p}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $p);
+        }
     }
 
     /**
@@ -85,8 +104,19 @@ class Day3 extends Common
         $this->log("O2 Rating: {$o2Decimal} ({$o2Bits})");
         $this->log("CO2 Rating: {$co2Decimal} ({$co2Bits})");
         $this->log("Life Support Rating: {$lifeSupportRating}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $lifeSupportRating);
+        }
     }
 
+    /**
+     * Calculate rating
+     * @param $data
+     * @param $type
+     * @return false|mixed|string
+     * @throws Exception
+     */
     public function calcRating($data, $type)
     {
         $bits = '';

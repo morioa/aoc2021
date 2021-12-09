@@ -12,7 +12,13 @@ use ReflectionClass;
  */
 class Day8 extends Common
 {
+    const PART_1_TEST_RESULT = 26;
+    const PART_2_TEST_RESULT = 5353;
+
     protected array $patterns = [];
+    protected array $displays = [];
+    protected array $displaysBySegmentsCount = [];
+    protected array $knownNumsBySegments = [];
 
     /**
      * Run method executed at script start
@@ -24,7 +30,11 @@ class Day8 extends Common
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $this->init($this->loadData($dataFile));
-            $this->signalDecode();
+
+            $func = ($this->part === 1)
+                ? 'countKnownDigits'
+                : 'decodeSignals';
+            $this->$func();
         } catch (Exception $e) {
             $this->log($e);
             exit(1);
@@ -34,21 +44,11 @@ class Day8 extends Common
     /**
      * Initialize data into class member variables
      * @param $data
+     * @throws Exception
      */
     public function init($data)
     {
-        $dataCount = count($data);
-        for ($i = 0; $i < $dataCount; $i++) {
-            list($l, $r) = explode(' | ', $data[$i]);
-            $this->patterns[$i]['source'] = explode(' ', $l);
-            $this->patterns[$i]['output'] = explode(' ', $r);
-        }
-        $this->log(['patterns' => $this->patterns]);
-    }
-
-    public function signalDecode()
-    {
-        $displays = [
+        $this->displays = [
             0 => 'abcefg',
             1 => 'cf',
             2 => 'acdeg',
@@ -60,8 +60,55 @@ class Day8 extends Common
             8 => 'abcdefg',
             9 => 'abcdfg',
         ];
+        $this->log(['displays' => $this->displays]);
 
-        $this->log('This is a work in progress...');
+        $this->displaysBySegmentsCount = [];
+        foreach ($this->displays as $num => $segments) {
+            $segmentsCount = strlen($segments);
+            $this->displaysBySegmentsCount[$segmentsCount][] = $num;
+        }
+        ksort($this->displaysBySegmentsCount);
+        //$this->log(['displays by segments count' => $this->displaysBySegmentsCount]);
+
+        foreach ($this->displaysBySegmentsCount as $count => $nums) {
+            $numsCount = count($nums);
+            if ($numsCount === 1) {
+                $this->knownNumsBySegments[$count] = $nums[0];
+            }
+        }
+        ksort($this->knownNumsBySegments);
+        //$this->log(['known numbers by segments' => $this->knownNumsBySegments]);
+
+        $dataCount = count($data);
+        for ($i = 0; $i < $dataCount; $i++) {
+            list($l, $r) = explode(' | ', $data[$i]);
+            $this->patterns[$i]['source'] = explode(' ', $l);
+            $this->patterns[$i]['output'] = explode(' ', $r);
+        }
+        //$this->log(['patterns' => $this->patterns]);
+
+        $this->getPartInput();
+    }
+
+    public function countKnownDigits()
+    {
+        $knownNumsCount = 0;
+        foreach ($this->patterns as $pattern) {
+            foreach ($pattern['output'] as $segment) {
+                $segmentLength = strlen($segment);
+                $knownNumsCount += (isset($this->knownNumsBySegments[$segmentLength]));
+            }
+        }
+        $this->log("Known digits count: {$knownNumsCount}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $knownNumsCount);
+        }
+    }
+
+    public function decodeSignals()
+    {
+        $this->log('A work in progress...');
     }
 }
 

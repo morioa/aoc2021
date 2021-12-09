@@ -12,13 +12,15 @@ use ReflectionClass;
  */
 class Day6 extends Common
 {
+    const PART_1_TEST_RESULT = 5934;
+    const PART_2_TEST_RESULT = 26984457539;
     const PART_1_CYCLES = 80;
     const PART_2_CYCLES = 256;
     const GESTATION_PARENT = 6;
     const GESTATION_CHILD = 8;
 
-    protected $fish = [];
-    protected $initialFishCount = 0;
+    protected array $fish = [];
+    protected int $initialFishCount = 0;
 
     /**
      * Run method executed at script start
@@ -30,7 +32,7 @@ class Day6 extends Common
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $this->init($this->loadData($dataFile));
-            $this->runCycles(constant(__CLASS__ . '::PART_' . $this->partInputRequest() . '_CYCLES'));
+            $this->runCycles(constant(__CLASS__ . '::PART_' . $this->part . '_CYCLES'));
         } catch (Exception $e) {
             $this->log($e);
             exit(1);
@@ -40,6 +42,7 @@ class Day6 extends Common
     /**
      * Initialize data into class member variables
      * @param $data
+     * @throws Exception
      */
     public function init($data)
     {
@@ -53,6 +56,8 @@ class Day6 extends Common
 
         $this->initialFishCount = array_sum($this->fish);
         $this->log(['Initial fish' => $this->fish, 'Initial fish count' => $this->initialFishCount]);
+
+        $this->getPartInput();
     }
 
     /**
@@ -90,5 +95,9 @@ class Day6 extends Common
         $fishCount = array_sum($this->fish);
         $this->log(['Final fish' => $this->fish, 'Final fish count' => $fishCount]);
         $this->log("Fish count: {$fishCount}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $fishCount);
+        }
     }
 }

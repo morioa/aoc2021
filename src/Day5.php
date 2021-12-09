@@ -12,8 +12,11 @@ use ReflectionClass;
  */
 class Day5 extends Common
 {
-    protected $lineCoords = [];
-    protected $pointCoords = [];
+    const PART_1_TEST_RESULT = 5;
+    const PART_2_TEST_RESULT = 12;
+
+    protected array $lineCoords = [];
+    protected array $pointCoords = [];
 
     /**
      * Run method executed at script start
@@ -24,7 +27,9 @@ class Day5 extends Common
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile), ($this->partInputRequest() === 1));
+            $data = $this->loadData($dataFile);
+
+            $this->init($data);
             $this->convertLinesToPoints();
             $this->countIntersectPoints();
         } catch (Exception $e) {
@@ -36,10 +41,14 @@ class Day5 extends Common
     /**
      * Initialize data into class member variables
      * @param $data
-     * @param false $hvLinesOnly
+     * @throws Exception
      */
-    public function init($data, $hvLinesOnly = false)
+    public function init($data)
     {
+        $this->getPartInput();
+
+        $hvLinesOnly = ($this->part === 1);
+
         foreach ($data as $line) {
             list($a, $b) = explode(' -> ', $line);
             list($ax, $ay) = explode(',', $a);
@@ -145,5 +154,9 @@ class Day5 extends Common
 
         $intersectsCount = count($intersects);
         $this->log("Intersect points count: {$intersectsCount}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $intersectsCount);
+        }
     }
 }

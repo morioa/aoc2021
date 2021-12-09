@@ -1,7 +1,6 @@
 <?php
 namespace AoC2021;
 
-use AoC2021\Common;
 use Exception;
 use ReflectionClass;
 
@@ -13,6 +12,9 @@ use ReflectionClass;
  */
 class Day1 extends Common
 {
+    const PART_1_TEST_RESULT = 7;
+    const PART_2_TEST_RESULT = 5;
+
     /**
      * Run method executed at script start
      * @param $dataFile
@@ -24,7 +26,9 @@ class Day1 extends Common
 
             $data = $this->loadData($dataFile);
 
-            $func = ($this->partInputRequest() === 1)
+            $this->init();
+
+            $func = ($this->part === 1)
                 ? 'countDepthIncreases'
                 : 'countDepthRangeIncreases';
             $this->$func($data);
@@ -35,8 +39,18 @@ class Day1 extends Common
     }
 
     /**
+     * Initialize class member variables
+     * @throws Exception
+     */
+    public function init()
+    {
+        $this->getPartInput();
+    }
+
+    /**
      * Count how many times the depth increases
      * @param $data
+     * @throws Exception
      */
     public function countDepthIncreases($data)
     {
@@ -51,11 +65,16 @@ class Day1 extends Common
         }
 
         $this->log("Depth increased {$increaseCount} times");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $increaseCount);
+        }
     }
 
     /**
      * Count how many times the depth increases by range
      * @param $data
+     * @throws Exception
      */
     public function countDepthRangeIncreases($data)
     {
@@ -78,5 +97,9 @@ class Day1 extends Common
         }
 
         $this->log("Depth range increased {$increaseCount} times");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $increaseCount);
+        }
     }
 }

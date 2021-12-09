@@ -21,6 +21,8 @@ class Run
     protected string $srcPath;
     protected string $assetsPath;
     protected array $days;
+    protected string $daysRange;
+    protected string $input;
 
     /**
      * Run constructor
@@ -58,16 +60,16 @@ class Run
             if ($daysCount === 0) {
                 throw new Exception('No days available to run');
             } elseif ($daysCount === 1) {
-                $daysRange = $this->days[0];
+                $this->daysRange = $this->days[0];
             } else {
-                $daysRange = "{$this->days[0]}-{$this->days[$daysCount - 1]}";
+                $this->daysRange = "{$this->days[0]}-{$this->days[$daysCount - 1]}";
             }
 
             // Get user input for day to run
-            $input = $this->getDayInput($daysRange);
+            $this->getDayInput();
 
             // Check existence of day source file
-            $dayBaseClass = "Day{$input}";
+            $dayBaseClass = "Day{$this->input}";
             $dayClass = "AoC2021\\{$dayBaseClass}";
             $dayFile = $this->srcPath . "{$dayBaseClass}.php";
             if (!file_exists($dayFile)) {
@@ -75,8 +77,11 @@ class Run
                 throw new Exception('Target source file does not exist');
             }
 
+            // Get user input for test data
+            $this->getTestInput();
+
             // Check existence of day data file
-            $dayDataFile = $this->assetsPath . "{$dayBaseClass}_input.txt";
+            $dayDataFile = $this->assetsPath . "{$dayBaseClass}_{$this->input}input.txt";
             if (!file_exists($dayDataFile)) {
                 print "\nMissing data file: \"{$dayDataFile}\"";
                 throw new Exception('Target data file does not exist');
@@ -96,20 +101,46 @@ class Run
 
     /**
      * Request day value from user
-     * @param $daysRange
-     * @return string
      * @throws Exception
      */
-    function getDayInput($daysRange)
+    function getDayInput()
     {
-        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? ({$daysRange}) : ");
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? ({$this->daysRange}) : ");
         $handle = fopen('php://stdin', 'r');
         $input = trim(fgets($handle));
         if (!in_array($input, $this->days)) {
-            throw new Exception('Invalid day specified');
+            $this->inputError('Invalid day specified');
+        } else {
+            $this->input = $input;
         }
+    }
 
-        return $input;
+    /**
+     * Request test value from user
+     * @throws Exception
+     */
+    function getTestInput()
+    {
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nDo you want to use test data? (y/n) : ");
+        $handle = fopen('php://stdin', 'r');
+        $input = trim(fgets($handle));
+
+        switch ($input) {
+            case 'y':
+            case 'yes':
+                print EscapeColors::fg_color('yellow', ">> Using test data\n");
+                $this->input = 'test';
+                break;
+
+            case 'n':
+            case 'no':
+                print EscapeColors::fg_color('yellow', ">> Using real data\n");
+                $this->input = '';
+                break;
+
+            default:
+                $this->inputError('Invalid entry');
+        }
     }
 
     /**
@@ -121,9 +152,6 @@ class Run
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? (y/n) : ");
         $handle = fopen('php://stdin', 'r');
         $input = strtolower(trim(fgets($handle)));
-        if (!in_array($input, ['y','yes','n','no'])) {
-            throw new Exception('Invalid response');
-        }
 
         switch ($input) {
             case 'y':
@@ -131,9 +159,32 @@ class Run
                 $this->start();
                 break;
 
-            default:
+            case 'n':
+            case 'no':
                 exit(0);
+
+            default:
+                $this->inputError('Invalid entry');
         }
+    }
+
+    /**
+     * Gracefully handle a user input error
+     * @param $msg
+     * @param bool $requestAgain
+     * @throws Exception
+     */
+    public function inputError($msg, $requestAgain = true)
+    {
+        $func = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
+
+        print EscapeColors::fg_color('bold_red', "\n>> {$msg} [{$func}]\n");
+
+        if (!$requestAgain) {
+            exit(1);
+        }
+
+        $this->$func();
     }
 }
 

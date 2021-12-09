@@ -12,8 +12,11 @@ use ReflectionClass;
  */
 class Day7 extends Common
 {
-    protected $crabs = [];
-    protected $fuelCosts = [];
+    const PART_1_TEST_RESULT = 37;
+    const PART_2_TEST_RESULT = 168;
+
+    protected array $crabs = [];
+    protected array $fuelCosts = [];
 
     /**
      * Run method executed at script start
@@ -25,9 +28,8 @@ class Day7 extends Common
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $this->init($this->loadData($dataFile));
-            $part = $this->partInputRequest();
-            $this->align($part === 2);
-            $this->alignBruteForce($part === 2);
+            $this->align($this->part === 2);
+            $this->alignBruteForce($this->part === 2);
         } catch (Exception $e) {
             $this->log($e);
             exit(1);
@@ -37,12 +39,15 @@ class Day7 extends Common
     /**
      * Initialize data into class member variables
      * @param $data
+     * @throws Exception
      */
     public function init($data)
     {
         $this->crabs = explode(',', $data[0]);
         sort($this->crabs);
         //$this->log(['Crabs' => $this->crabs]);
+
+        $this->getPartInput();
     }
 
     /**
@@ -50,37 +55,56 @@ class Day7 extends Common
      *   - median (if constant fuel cost)
      *   - mean   (if increased fuel cost per step of shift)
      * @param false $fuelCostsIncrease
+     * @throws Exception
      */
     public function align($fuelCostsIncrease = false)
     {
         $count = count($this->crabs);
-        $optimumFunc = ($fuelCostsIncrease) ? 'mean' : 'median';
-        $optimumPos = $this->$optimumFunc();
-        $this->log(['count' => $count, 'optimum func' => $optimumFunc, 'optimum pos' => $optimumPos]);
-        $this->log(['mean' => $this->mean(), 'median' => $this->median()]);
+        $func = ($fuelCostsIncrease) ? 'mean' : 'median';
+        $alignPositions = [$this->$func()];
+        if ($func === 'mean') {
+            $alignPositions[] = $this->$func(true);
+        }
 
-        $fuel = 0;
-        foreach ($this->crabs as $pos) {
-            $shift = abs($optimumPos - $pos);
-            if (!$fuelCostsIncrease) {
-                $fuel += $shift;
-            } else {
-                $fuelForPos = 0;
-                for ($j = 1; $j <= $shift; $j++) {
-                    $fuelForPos += $j;
+        $this->log(['count' => $count, 'func' => $func, 'align positions' => $alignPositions]);
+
+        $optimalFuel = 0;
+        $optimalPos = null;
+        foreach ($alignPositions as $alignPos) {
+            $fuel = 0;
+            foreach ($this->crabs as $pos) {
+                $shift = abs($alignPos - $pos);
+                if (!$fuelCostsIncrease) {
+                    $fuel += $shift;
+                } else {
+                    $fuelForPos = 0;
+                    for ($j = 1; $j <= $shift; $j++) {
+                        $fuelForPos += $j;
+                    }
+                    //$this->log("Fuel for pos: {$fuelForPos}");
+
+                    $fuel += $fuelForPos;
                 }
-                //$this->log("Fuel for pos: {$fuelForPos}");
+            }
 
-                $fuel += $fuelForPos;
+            if ($optimalFuel === 0 || $optimalFuel > $fuel) {
+                $optimalFuel = $fuel;
+                $optimalPos = $alignPos;
             }
         }
-        $this->log("Optimal position (" . __FUNCTION__ . "): {$optimumPos}");
-        $this->log("Fuel consumption (" . __FUNCTION__ . "): {$fuel}");
+
+        $this->log("Optimal position (" . __FUNCTION__ . "): {$optimalPos}");
+        $this->log("Fuel consumption (" . __FUNCTION__ . "): {$optimalFuel}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $fuel);
+        }
     }
 
     /**
      * Use brute force to calculate fuel consumption
      * @param false $fuelCostsIncrease
+     * @throws Exception
      */
     public function alignBruteForce($fuelCostsIncrease = false)
     {
@@ -111,16 +135,22 @@ class Day7 extends Common
 
         $this->log("Optimal position (" . __FUNCTION__ . "): {$pos}");
         $this->log("Fuel consumption (" . __FUNCTION__ . "): {$cost}");
+
+        if ($this->isTest) {
+            $this->compareResults(__CLASS__, $this->part, $cost);
+        }
     }
 
     /**
      * Find the mean (average) of the crab positions
-     * @return false|float
+     * @param false $roundUp
+     * @return mixed
      */
-    public function mean()
+    public function mean($roundUp = false)
     {
+        $func = ($roundUp) ? 'ceil' : 'floor';
         $count = count($this->crabs);
-        return floor(array_sum($this->crabs) / $count);
+        return $func(array_sum($this->crabs) / $count);
     }
 
     /**
