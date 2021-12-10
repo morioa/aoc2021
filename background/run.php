@@ -29,6 +29,7 @@ class Run
      */
     public function __construct()
     {
+        $this->showTitle();
         $this->init();
     }
 
@@ -99,11 +100,26 @@ class Run
         }
     }
 
+    public function showTitle()
+    {
+        $title = <<<TITLE
+
+ █████╗  ██████╗  ██████╗    ██████╗  ██████╗ ██████╗  ██╗
+██╔══██╗██╔═══██╗██╔════╝    ╚════██╗██╔═████╗╚════██╗███║
+███████║██║   ██║██║          █████╔╝██║██╔██║ █████╔╝╚██║
+██╔══██║██║   ██║██║         ██╔═══╝ ████╔╝██║██╔═══╝  ██║
+██║  ██║╚██████╔╝╚██████╗    ███████╗╚██████╔╝███████╗ ██║
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═╝
+
+TITLE;
+        print EscapeColors::fg_color(TITLE_FG_COLOR, $title);
+    }
+
     /**
      * Request day value from user
      * @throws Exception
      */
-    function getDayInput()
+    public function getDayInput()
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? ({$this->daysRange}) : ");
         $handle = fopen('php://stdin', 'r');
@@ -119,7 +135,7 @@ class Run
      * Request test value from user
      * @throws Exception
      */
-    function getTestInput()
+    public function getTestInput()
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nDo you want to use test data? (y/n) : ");
         $handle = fopen('php://stdin', 'r');
@@ -147,7 +163,7 @@ class Run
      * Get restart value from user
      * @throws Exception
      */
-    function getRestartInput()
+    public function getRestartInput()
     {
         print EscapeColors::fg_color('dark_gray', "\n" . str_repeat('=', 80) . "\n");
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? (y/n) : ");

@@ -19,19 +19,21 @@ class Common
     /**
      * Output standard log message
      * @param $msg
+     * @return void
+     * @throws Exception
      */
     public function log($msg)
     {
         if (is_a($msg, 'Exception')) {
-            $msg = "ERROR: {$msg->getMessage()}";
+            $msg = EscapeColors::fg_color(LOG_ERROR_FG_COLOR, "ERROR:") . " {$msg->getMessage()}";
         } elseif (is_array($msg)) {
-            $msg = "DEBUG:\n" . trim(print_r($msg, true));
+            $msg = EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, "DEBUG:\n") . trim(print_r($msg, true));
         } else {
-            $msg = "INFO: {$msg}";
+            $msg = EscapeColors::fg_color(LOG_INFO_FG_COLOR, "INFO:") . EscapeColors::fg_color(LOG_FG_COLOR," {$msg}");
         }
 
         $timestamp = date('r');
-        print "[{$timestamp}] {$msg}\n";
+        print EscapeColors::fg_color(TIMESTAMP_FG_COLOR, "[{$timestamp}]") . "  {$msg}\n";
     }
 
     /**
@@ -39,6 +41,7 @@ class Common
      * @param $dataFile
      * @param string $lineDelimiter
      * @return false|string[]
+     * @throws Exception
      */
     public function loadData($dataFile, $lineDelimiter = "\n")
     {
