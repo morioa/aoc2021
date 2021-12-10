@@ -149,6 +149,7 @@ class Run
      */
     function getRestartInput()
     {
+        print EscapeColors::fg_color('dark_gray', "\n" . str_repeat('=', 80) . "\n");
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? (y/n) : ");
         $handle = fopen('php://stdin', 'r');
         $input = strtolower(trim(fgets($handle)));
