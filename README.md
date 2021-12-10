@@ -1,4 +1,11 @@
-# Advent of Code 2021
+
+█████╗  ██████╗  ██████╗    ██████╗  ██████╗ ██████╗  ██╗
+██╔══██╗██╔═══██╗██╔════╝    ╚════██╗██╔═████╗╚════██╗███║
+███████║██║   ██║██║          █████╔╝██║██╔██║ █████╔╝╚██║
+██╔══██║██║   ██║██║         ██╔═══╝ ████╔╝██║██╔═══╝  ██║
+██║  ██║╚██████╔╝╚██████╗    ███████╗╚██████╔╝███████╗ ██║
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═╝
+
 
 This is a PHP approach to solving the Advent of Code 2021 challenge puzzles. Find out more information about the challenge at the official website (https://adventofcode.com).
 
