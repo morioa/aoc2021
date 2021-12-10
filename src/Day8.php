@@ -68,7 +68,7 @@ class Day8 extends Common
             $this->displaysBySegmentsCount[$segmentsCount][] = $num;
         }
         ksort($this->displaysBySegmentsCount);
-        //$this->log(['displays by segments count' => $this->displaysBySegmentsCount]);
+        $this->log(['displays by segments count' => $this->displaysBySegmentsCount]);
 
         foreach ($this->displaysBySegmentsCount as $count => $nums) {
             $numsCount = count($nums);
@@ -77,7 +77,7 @@ class Day8 extends Common
             }
         }
         ksort($this->knownNumsBySegments);
-        //$this->log(['known numbers by segments' => $this->knownNumsBySegments]);
+        $this->log(['known numbers by segments' => $this->knownNumsBySegments]);
 
         $dataCount = count($data);
         for ($i = 0; $i < $dataCount; $i++) {
@@ -108,6 +108,28 @@ class Day8 extends Common
 
     public function decodeSignals()
     {
+        $posFindOrder = [
+            1,  // narrow position of 'cf'
+            7,  // find position of 'd' (using 1)
+            4,  // narrow position of 'bd' (using 7)
+            9,  // find position of 'g' [and 'e'] (using 4)
+            6,  // find position of 'f' [and 'c']
+            0,  // find position of 'b' [and 'd']
+        ];
+
+        foreach ($this->patterns as $pattern) {
+            $sources = $pattern['source'];
+            usort($sources, function($a, $b) {
+                return (strlen($a) - strlen($b));
+            });
+            $this->log(['source' => $sources]);
+
+            $sourceNums = [];
+            foreach ($sources as $source) {
+
+            }
+        }
+
         $this->log('A work in progress...');
     }
 }
