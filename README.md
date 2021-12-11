@@ -30,3 +30,4 @@ Completion status:
 | [Day 8: Seven Segment Search](https://adventofcode.com/2021/day/8)      | [Day8.php](src/Day8.php)   | ✓      |        |
 | [Day 9: Smoke Basin](https://adventofcode.com/2021/day/9)               | [Day9.php](src/Day9.php)   | ✓      | ✓      |
 | [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10)          | [Day10.php](src/Day10.php) | ✓      | ✓      |
+| [Day 11: Dumbo Octopus](https://adventofcode.com/2021/day/11)           | [Day11.php](src/Day11.php) |        |        |

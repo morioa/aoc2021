@@ -50,9 +50,7 @@ class Day9 extends Common
      */
     public function init($part, $data)
     {
-        foreach ($data as $map) {
-            $this->heightMap[] = str_split($map);
-        }
+        $this->heightMap = array_map('str_split', $data);
         //$this->log(['height map' => $this->heightMap]);
 
         $this->setPart($part);
@@ -82,7 +80,7 @@ class Day9 extends Common
                     && (!isset($this->heightMap[$i][$l]) || $pointHeight < $this->heightMap[$i][$l])
                     && (!isset($this->heightMap[$i][$r]) || $pointHeight < $this->heightMap[$i][$r])
                 ) {
-                    $this->log(['low point' => "{$i},{$j}"]);
+                    //$this->log(['low point' => "{$i},{$j}"]);
                     $lowPoints[] = $this->heightMap[$i][$j];
                 }
             }
