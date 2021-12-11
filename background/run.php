@@ -158,16 +158,11 @@ class Run
 
     /**
      * Get user command inputs
-     * @param bool $showHelp
      * @return void
      * @throws Exception
      */
-    public function getCommandInputs(bool $showHelp = false)
+    public function getCommandInputs()
     {
-        if ($showHelp) {
-            $this->showHelp();
-        }
-
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\n> ");
         $inputs = preg_split('/\s+/', trim(fgets(STDIN)));
 
@@ -177,7 +172,7 @@ class Run
         //print_r(['command' => $command, 'day' => $day, 'part' => $part]);
 
         if (!in_array($command, array_merge(array_keys($this->commands), array_column($this->commands, 'alias')))) {
-            $this->inputError('Invalid command specified');
+            $this->inputError("Invalid command entry: {$command}", 'showHelpAlert');
         } else {
             switch ($command) {
                 case 'h':
@@ -187,14 +182,12 @@ class Run
 
                 case 'd':
                 case 'days':
-                    print 'Available days: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, $this->daysRange) . "\n";
-                    $this->start();
+                    $this->showDays();
                     break;
 
                 case 'p':
                 case 'parts':
-                    print 'Available parts: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, implode('-', $this->parts)) . "\n";
-                    $this->start();
+                    $this->showParts();
                     break;
 
                 case 'r':
@@ -224,7 +217,7 @@ class Run
                     exit(0);
 
                 default:
-                    $this->inputError("Invalid command entry: {$command}");
+                    $this->inputError("Invalid command entry: {$command}", 'showHelpAlert');
             }
         }
     }
@@ -239,6 +232,16 @@ class Run
         require_once $this->srcClassFile;
         $day = new $this->srcClass;
         $day->run($this->srcDataFile, $this->part);
+    }
+
+    /**
+     * Display command help suggestion
+     * @return void
+     * @throws Exception
+     */
+    public function showHelpAlert()
+    {
+        print "Type " . EscapeColors::fg_color(COMMAND_FG_COLOR, 'h') . " or " . EscapeColors::fg_color(COMMAND_FG_COLOR, 'help') . " to show a list of available commands.\n";
     }
 
     /**
@@ -291,7 +294,7 @@ HELP;
 
         $exampleCommands = [
             [
-                'desc' => 'Run day 3 part 2 using test input data. Results are known for test executions, so result comparisons are included.',
+                'desc' => "Run day 3 part 2 using test input data. Results are known for test executions, so\n{$indent}result comparisons are included.",
                 'commands' => [
                     EscapeColors::fg_color(COMMAND_FG_COLOR, 't') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 3 2'),
                     EscapeColors::fg_color(COMMAND_FG_COLOR, 'test') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 3 2'),
@@ -316,6 +319,26 @@ HELP;
     }
 
     /**
+     * Display valid days
+     * @return void
+     * @throws Exception
+     */
+    public function showDays()
+    {
+        print 'Available days: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, $this->daysRange) . "\n";
+    }
+
+    /**
+     * Display valid parts
+     * @return void
+     * @throws Exception
+     */
+    public function showParts()
+    {
+        print 'Available parts: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, implode('-', $this->parts)) . "\n";
+    }
+
+    /**
      * Set class member variables related to source
      * @param $day
      * @return void
@@ -325,7 +348,7 @@ HELP;
     {
         $day = $day ?? $this->getDayInput();
         if (!in_array($day, $this->days)) {
-            $this->inputError("Invalid day entry: {$day}");
+            $this->inputError("Invalid day entry: {$day}", 'showDays');
         } else {
             $this->day = $day;
         }
@@ -366,7 +389,7 @@ HELP;
     public function setPartVar($part)
     {
         if (!in_array($part, $this->parts)) {
-            $this->inputError("Invalid part entry: {$part}");
+            $this->inputError("Invalid part entry: {$part}", 'showParts');
         }
 
         $this->part = $part;
@@ -379,10 +402,10 @@ HELP;
      */
     public function getDayInput()
     {
-        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? ({$this->daysRange}) : ");
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? [{$this->daysRange}] : ");
         $input = trim(fgets(STDIN));
         if (!in_array($input, $this->days)) {
-            $this->inputError("Invalid day entry: {$input}");
+            $this->inputError("Invalid day entry: {$input}", 'showDays');
         } else {
             return $input;
         }
@@ -395,18 +418,18 @@ HELP;
      */
     public function getTestInput()
     {
-        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nDo you want to use test data? (y/n) : ");
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nDo you want to use test data? [y/n] : ");
         $input = trim(fgets(STDIN));
 
         switch ($input) {
             case 'y':
             case 'yes':
-                print EscapeColors::fg_color('yellow', ">> Using test data\n");
+                print EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, ">> Using test data\n");
                 return true;
 
             case 'n':
             case 'no':
-                print EscapeColors::fg_color('yellow', ">> Using real data\n");
+                print EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, ">> Using real data\n");
                 return false;
 
             default:
@@ -421,8 +444,8 @@ HELP;
      */
     public function getRestartInput()
     {
-        print EscapeColors::fg_color('dark_gray', "\n" . str_repeat('=', 80) . "\n");
-        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? (y/n) : ");
+        print EscapeColors::fg_color(DIVISION_FG_COLOR, "\n" . str_repeat('▪', 90) . "\n");
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? [y/n] : ");
         $input = strtolower(trim(fgets(STDIN)));
 
         switch ($input) {
@@ -443,17 +466,17 @@ HELP;
     /**
      * Gracefully handle a user input error
      * @param $msg
-     * @param bool $requestAgain
+     * @param $calloutFunc
      * @throws Exception
      */
-    public function inputError($msg, $requestAgain = true)
+    public function inputError($msg, $calloutFunc = null)
     {
         $func = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
 
         $this->showError($msg, $func);
 
-        if (!$requestAgain) {
-            exit(1);
+        if (!is_null($calloutFunc) && method_exists($this, $calloutFunc) && $this->mode === 'command') {
+            $this->$calloutFunc();
         }
 
         if ($this->mode === 'command') {
@@ -465,7 +488,8 @@ HELP;
 
     public function showError($msg, $func)
     {
-        print EscapeColors::fg_color('bold_red', ">> {$msg} [{$func}]\n");
+        //print EscapeColors::fg_color(LOG_ERROR_FG_COLOR, ">> {$msg} [{$func}]\n");
+        print EscapeColors::fg_color(LOG_ERROR_FG_COLOR, ">> {$msg}\n");
     }
 }
 

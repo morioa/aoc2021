@@ -61,7 +61,9 @@ class Common
     public function setPart($part)
     {
         if ($part === 0) {
-            $part = $this->getPartInput();
+            while (!($part = $this->getPartInput())) {
+                // just keep trying
+            };
         }
 
         $this->part = $part;
@@ -69,15 +71,16 @@ class Common
 
     /**
      * Request user input for day part to run
-     * @return int|void
+     * @return false|int
      * @throws Exception
      */
     public function getPartInput()
     {
-        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich part would you like to run? (1-2) : ");
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich part would you like to run? [1-2] : ");
         $input = trim(fgets(STDIN));
         if (!in_array($input, [1, 2])) {
-            $this->inputError('Invalid part specified');
+            $this->inputError("Invalid part entry: {$input}");
+            return false;
         } else {
             return (int)$input;
         }
@@ -86,21 +89,17 @@ class Common
     /**
      * Gracefully handle a user input error
      * @param $msg
-     * @param bool $requestAgain
      * @return void
      * @throws Exception
      */
-    public function inputError($msg, bool $requestAgain = true)
+    public function inputError($msg)
     {
         $func = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
 
-        print EscapeColors::fg_color('bold_red', "\n>> {$msg} [{$func}]\n");
+        //print EscapeColors::fg_color(LOG_ERROR_FG_COLOR, "\n>> {$msg} [{$func}]\n");
+        print EscapeColors::fg_color(LOG_ERROR_FG_COLOR, ">> {$msg}\n");
 
-        if (!$requestAgain) {
-            exit(1);
-        }
-
-        $this->$func();
+        //$this->$func();
     }
 
     /**
