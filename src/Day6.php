@@ -61,7 +61,7 @@ class Day6 extends Common
         }
 
         $this->initialFishCount = array_sum($this->fish);
-        $this->log(['Initial fish' => $this->fish, 'Initial fish count' => $this->initialFishCount]);
+        //$this->log(['Initial fish' => $this->fish, 'Initial fish count' => $this->initialFishCount]);
 
         $this->setPart($part);
     }
@@ -101,7 +101,7 @@ class Day6 extends Common
 
         ksort($this->fish);
         $fishCount = array_sum($this->fish);
-        $this->log(['Final fish' => $this->fish, 'Final fish count' => $fishCount]);
+        //$this->log(['Final fish' => $this->fish, 'Final fish count' => $fishCount]);
         $this->log("Fish count: {$fishCount}");
 
         if ($this->isTest) {
