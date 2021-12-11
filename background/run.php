@@ -42,6 +42,10 @@ class Run
             'alias' => 'd',
             'desc' => 'Shows available days for run and test commands.',
         ],
+        'parts' => [
+            'alias' => 'p',
+            'desc' => 'Shows available parts for run and test commands.',
+        ],
         'run' => [
             'alias' => 'r',
             'desc' => 'Run process for the specified day (number) and part (number 1 or 2) using real data.',
@@ -183,7 +187,13 @@ class Run
 
                 case 'd':
                 case 'days':
-                    print "Available days: {$this->daysRange}\n";
+                    print 'Available days: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, $this->daysRange) . "\n";
+                    $this->start();
+                    break;
+
+                case 'p':
+                case 'parts':
+                    print 'Available parts: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, implode('-', $this->parts)) . "\n";
                     $this->start();
                     break;
 
@@ -242,8 +252,15 @@ class Run
 This is a PHP approach to handling the Advent of Code 2021 challenge puzzles.
 
 Commands:
+%s
 
+Example commands:
+
+%s
 HELP;
+        $indent = str_repeat(' ', 4);
+
+        $commandsHelpText = '';
         foreach ($this->commands as $command => $commandDetails) {
             $alias = $commandDetails['alias'] ?? '';
             $args = $commandDetails['args'] ?? '';
@@ -257,20 +274,43 @@ HELP;
                 ? " {$args}"
                 : '';
 
-            $commandFormatted = EscapeColors::fg_color('bold_green', $command);
+            $commandFormatted = EscapeColors::fg_color(COMMAND_FG_COLOR, $command);
             $aliasFormatted = ($alias !== '')
-                ? EscapeColors::fg_color('bold_green', $alias) . ', '
+                ? EscapeColors::fg_color(COMMAND_FG_COLOR, $alias) . ', '
                 : '';
             $argsFormatted = ($args !== '')
-                ? ' ' . EscapeColors::fg_color('yellow', $args)
+                ? ' ' . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, $args)
                 : '';
 
             $unformattedConcat = $aliasUnformatted . $commandUnformatted . $argsUnformatted;
             $spacer = str_repeat(' ', 24 - strlen($unformattedConcat));
 
             $formattedConcat = $aliasFormatted . $commandFormatted . $argsFormatted;
-            $help .= $formattedConcat . $spacer . "{$desc}\n";
+            $commandsHelpText .= $indent . $formattedConcat . $spacer . "{$desc}\n";
         }
+
+        $exampleCommands = [
+            [
+                'desc' => 'Run day 3 part 2 using test input data.',
+                'commands' => [
+                    EscapeColors::fg_color(COMMAND_FG_COLOR, 't') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 3 2'),
+                    EscapeColors::fg_color(COMMAND_FG_COLOR, 'test') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 3 2'),
+                ],
+            ],
+            [
+                'desc' => 'Run day 6 part 1 using real input data.',
+                'commands' => [
+                    EscapeColors::fg_color(COMMAND_FG_COLOR, 'r') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 6 1'),
+                    EscapeColors::fg_color(COMMAND_FG_COLOR, 'run') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 6 1'),
+                ],
+            ],
+        ];
+        $exampleCommandsText = '';
+        foreach ($exampleCommands as $example) {
+            $exampleCommandsText .= $indent . $example['desc'] . "\n" . $indent . $indent . implode('    OR    ', $example['commands']) . "\n\n";
+        }
+
+        $help = sprintf($help, $commandsHelpText, $exampleCommandsText);
 
         print "{$help}";
     }

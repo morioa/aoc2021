@@ -46,8 +46,9 @@ class Common
     public function loadData(string $dataFile, string $lineDelimiter = "\n")
     {
         $this->isTest = (strpos(basename($dataFile), 'test') > 0);
+        $testStr = ($this->isTest) ? EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, 'test ') : '';
 
-        $this->log('Loading input data');
+        $this->log("Loading {$testStr}input data");
         return explode($lineDelimiter, trim(str_replace("\r\n", "\n", file_get_contents($dataFile))));
     }
 
