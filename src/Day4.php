@@ -30,8 +30,9 @@ class Day4 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $this->init($part, $this->loadData($dataFile, "\n\n"));
+
+            $this->log("Executing part {$this->part}");
             $this->draw($this->part === 1);
             $this->calcFinalScore();
         } catch (Exception $e) {

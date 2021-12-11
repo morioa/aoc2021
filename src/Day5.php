@@ -29,10 +29,10 @@ class Day5 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $data = $this->loadData($dataFile);
-
             $this->init($part, $data);
+
+            $this->log("Executing part {$this->part}");
             $this->convertLinesToPoints();
             $this->countIntersectPoints();
         } catch (Exception $e) {

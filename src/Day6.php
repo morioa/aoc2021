@@ -33,8 +33,9 @@ class Day6 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $this->init($part, $this->loadData($dataFile));
+
+            $this->log("Executing part {$this->part}");
             $this->runCycles(constant(__CLASS__ . '::PART_' . $this->part . '_CYCLES'));
         } catch (Exception $e) {
             $this->log($e);

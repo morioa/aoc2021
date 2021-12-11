@@ -28,8 +28,9 @@ class Day9 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $this->init($part, $this->loadData($dataFile));
+
+            $this->log("Executing part {$this->part}");
             $func = ($this->part === 1)
                 ? 'calcRiskLevel'
                 : 'findBasins';

@@ -26,11 +26,10 @@ class Day3 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $data = $this->loadData($dataFile);
-
             $this->init($part);
 
+            $this->log("Executing part {$this->part}");
             $func = ($this->part === 1)
                 ? 'calcPowerConsumption'
                 : 'calcLifeSupportRating';

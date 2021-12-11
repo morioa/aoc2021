@@ -29,8 +29,9 @@ class Day10 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $this->init($part, $this->loadData($dataFile));
+
+            $this->log("Executing part {$this->part}");
             $this->parseChunks();
         } catch (Exception $e) {
             $this->log($e);

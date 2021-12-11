@@ -29,8 +29,9 @@ class Day7 extends Common
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
-
             $this->init($part, $this->loadData($dataFile));
+
+            $this->log("Executing part {$this->part}");
             $this->align($this->part === 2);
             $this->alignBruteForce($this->part === 2);
         } catch (Exception $e) {
