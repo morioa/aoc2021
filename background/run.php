@@ -40,20 +40,20 @@ class Run
         ],
         'days' => [
             'alias' => 'd',
-            'desc' => 'Shows available days for run and test commands.',
+            'desc' => 'Shows available DAY values for run and test commands.',
         ],
         'parts' => [
             'alias' => 'p',
-            'desc' => 'Shows available parts for run and test commands.',
+            'desc' => 'Shows available PART values for run and test commands.',
         ],
         'run' => [
             'alias' => 'r',
-            'desc' => 'Run process for the specified day (number) and part (number 1 or 2) using real data.',
+            'desc' => 'Run process for the specified DAY and PART using real data.',
             'args' => '[DAY] [PART]',
         ],
         'test' => [
             'alias' => 't',
-            'desc' => 'Run process for the specified day (number) and part (number 1 or 2) using test data.',
+            'desc' => 'Run process for the specified DAY and PART using test data.',
             'args' => '[DAY] [PART]',
         ],
         'int' => [
@@ -291,7 +291,7 @@ HELP;
 
         $exampleCommands = [
             [
-                'desc' => 'Run day 3 part 2 using test input data.',
+                'desc' => 'Run day 3 part 2 using test input data. Results are known for test executions, so result comparisons are included.',
                 'commands' => [
                     EscapeColors::fg_color(COMMAND_FG_COLOR, 't') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 3 2'),
                     EscapeColors::fg_color(COMMAND_FG_COLOR, 'test') . EscapeColors::fg_color(COMMAND_ARG_FG_COLOR, ' 3 2'),
