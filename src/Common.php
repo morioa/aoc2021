@@ -38,12 +38,12 @@ class Common
 
     /**
      * Load data from data file
-     * @param $dataFile
+     * @param string $dataFile
      * @param string $lineDelimiter
      * @return false|string[]
      * @throws Exception
      */
-    public function loadData($dataFile, $lineDelimiter = "\n")
+    public function loadData(string $dataFile, string $lineDelimiter = "\n")
     {
         $this->isTest = (strpos(basename($dataFile), 'test') > 0);
 
@@ -52,18 +52,33 @@ class Common
     }
 
     /**
+     * Set class member variable for part
+     * @param $part
+     * @return void
+     * @throws Exception
+     */
+    public function setPart($part)
+    {
+        if ($part === 0) {
+            $part = $this->getPartInput();
+        }
+
+        $this->part = $part;
+    }
+
+    /**
      * Request user input for day part to run
+     * @return int|void
      * @throws Exception
      */
     public function getPartInput()
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich part would you like to run? (1-2) : ");
-        $handle = fopen('php://stdin', 'r');
-        $input = trim(fgets($handle));
+        $input = trim(fgets(STDIN));
         if (!in_array($input, [1, 2])) {
             $this->inputError('Invalid part specified');
         } else {
-            $this->part = (int)$input;
+            return (int)$input;
         }
     }
 
@@ -71,9 +86,10 @@ class Common
      * Gracefully handle a user input error
      * @param $msg
      * @param bool $requestAgain
+     * @return void
      * @throws Exception
      */
-    public function inputError($msg, $requestAgain = true)
+    public function inputError($msg, bool $requestAgain = true)
     {
         $func = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
 
@@ -88,12 +104,12 @@ class Common
 
     /**
      * Compare values of expected test result to received result
-     * @param $class
-     * @param $part
+     * @param string $class
+     * @param int $part
      * @param $b
      * @throws Exception
      */
-    public function compareResults($class, $part, $b)
+    public function compareResults(string $class, int $part, $b)
     {
         $results = [
             'match' => 'bold_blue',
@@ -111,6 +127,8 @@ class Common
 
     /**
      * Method to execute upon script shutdown
+     * @return void
+     * @throws Exception
      */
     public static function done()
     {
@@ -118,4 +136,4 @@ class Common
     }
 }
 
-register_shutdown_function(['AoC2021\Common', 'done']);
+//register_shutdown_function(['AoC2021\Common', 'done']);

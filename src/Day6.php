@@ -25,13 +25,16 @@ class Day6 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile));
+            $this->init($part, $this->loadData($dataFile));
             $this->runCycles(constant(__CLASS__ . '::PART_' . $this->part . '_CYCLES'));
         } catch (Exception $e) {
             $this->log($e);
@@ -41,10 +44,12 @@ class Day6 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
         $fish = explode(',', $data[0]);
         for ($i = 0; $i <= self::GESTATION_CHILD; $i++) {
@@ -57,12 +62,14 @@ class Day6 extends Common
         $this->initialFishCount = array_sum($this->fish);
         $this->log(['Initial fish' => $this->fish, 'Initial fish count' => $this->initialFishCount]);
 
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
     /**
      * Perform iteration through cycles and output number of fish when complete
      * @param $cycles
+     * @return void
+     * @throws Exception
      */
     public function runCycles($cycles)
     {

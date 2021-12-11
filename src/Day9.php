@@ -20,13 +20,16 @@ class Day9 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile));
+            $this->init($part, $this->loadData($dataFile));
             $func = ($this->part === 1)
                 ? 'calcRiskLevel'
                 : 'findBasins';
@@ -39,19 +42,26 @@ class Day9 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
         foreach ($data as $map) {
             $this->heightMap[] = str_split($map);
         }
         //$this->log(['height map' => $this->heightMap]);
 
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
+    /**
+     * Calculate the risk level by finding the low points
+     * @return void
+     * @throws Exception
+     */
     public function calcRiskLevel()
     {
         $lowPoints = [];
@@ -78,7 +88,7 @@ class Day9 extends Common
         }
 
         $riskLevel = array_sum($lowPoints) + count($lowPoints);
-        $this->log(['low points' => $lowPoints, 'risk level' => $riskLevel]);
+        //$this->log(['low points' => $lowPoints, 'risk level' => $riskLevel]);
         $this->log("Risk level: {$riskLevel}");
 
         if ($this->isTest) {
@@ -86,6 +96,11 @@ class Day9 extends Common
         }
     }
 
+    /**
+     * Find the basins and add the sizes of the 3 largest
+     * @return void
+     * @throws Exception
+     */
     public function findBasins()
     {
         $rowsCount = count($this->heightMap);
@@ -157,14 +172,14 @@ class Day9 extends Common
             }
             $intersectExists = false;
         }
-        $this->log(['basins' => $basins]);
+        //$this->log(['basins' => $basins]);
 
         $basinsBySize = [];
         foreach ($basins as $key => $basin) {
             $basinsBySize[$key] = count($basin);
         }
         rsort($basinsBySize);
-        $this->log(['basins by size' => $basinsBySize]);
+        //$this->log(['basins by size' => $basinsBySize]);
 
         $basinsSize = $basinsBySize[0] * $basinsBySize[1] * $basinsBySize[2];
         $this->log("Basins size: {$basinsSize}");

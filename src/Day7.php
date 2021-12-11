@@ -21,13 +21,16 @@ class Day7 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile));
+            $this->init($part, $this->loadData($dataFile));
             $this->align($this->part === 2);
             $this->alignBruteForce($this->part === 2);
         } catch (Exception $e) {
@@ -38,26 +41,29 @@ class Day7 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
         $this->crabs = explode(',', $data[0]);
         sort($this->crabs);
         //$this->log(['Crabs' => $this->crabs]);
 
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
     /**
      * Use formulas to calculate fuel consumption
      *   - median (if constant fuel cost)
      *   - mean   (if increased fuel cost per step of shift)
-     * @param false $fuelCostsIncrease
+     * @param bool $fuelCostsIncrease
+     * @return void
      * @throws Exception
      */
-    public function align($fuelCostsIncrease = false)
+    public function align(bool $fuelCostsIncrease = false)
     {
         $count = count($this->crabs);
         $func = ($fuelCostsIncrease) ? 'mean' : 'median';
@@ -103,10 +109,11 @@ class Day7 extends Common
 
     /**
      * Use brute force to calculate fuel consumption
-     * @param false $fuelCostsIncrease
+     * @param bool $fuelCostsIncrease
+     * @return void
      * @throws Exception
      */
-    public function alignBruteForce($fuelCostsIncrease = false)
+    public function alignBruteForce(bool $fuelCostsIncrease = false)
     {
         $uniquePositions = array_unique($this->crabs);
         $uniquePositionsCount = count($uniquePositions);
@@ -143,10 +150,10 @@ class Day7 extends Common
 
     /**
      * Find the mean (average) of the crab positions
-     * @param false $roundUp
+     * @param bool $roundUp
      * @return mixed
      */
-    public function mean($roundUp = false)
+    public function mean(bool $roundUp = false)
     {
         $func = ($roundUp) ? 'ceil' : 'floor';
         $count = count($this->crabs);

@@ -23,13 +23,16 @@ class Day8 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile));
+            $this->init($part, $this->loadData($dataFile));
 
             $func = ($this->part === 1)
                 ? 'countKnownDigits'
@@ -43,10 +46,12 @@ class Day8 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
         $this->displays = [
             0 => 'abcefg',
@@ -87,9 +92,14 @@ class Day8 extends Common
         }
         //$this->log(['patterns' => $this->patterns]);
 
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
+    /**
+     * Count the number of segments of known digits
+     * @return void
+     * @throws Exception
+     */
     public function countKnownDigits()
     {
         $knownNumsCount = 0;
@@ -106,6 +116,11 @@ class Day8 extends Common
         }
     }
 
+    /**
+     * Decode signal segments for each set
+     * @return void
+     * @throws Exception
+     */
     public function decodeSignals()
     {
         $posFindOrder = [

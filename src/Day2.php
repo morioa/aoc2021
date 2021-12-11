@@ -18,17 +18,19 @@ class Day2 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $data = $this->loadData($dataFile);
 
-            $this->init();
-
-            $func = ($this->part)
+            $this->init($part);
+            $func = ($this->part === 1)
                 ? 'findPosition'
                 : 'findPositionUsingAim';
             $this->$func($data);
@@ -40,16 +42,19 @@ class Day2 extends Common
 
     /**
      * Initialize class member variables
+     * @param $part
+     * @return void
      * @throws Exception
      */
-    public function init()
+    public function init($part)
     {
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
     /**
      * Find submarine position using up/down for depth
      * @param $data
+     * @return void
      * @throws Exception
      */
     public function findPosition($data)
@@ -92,6 +97,7 @@ class Day2 extends Common
     /**
      * Find submarine position using up/down for aim instead of depth
      * @param $data
+     * @return void
      * @throws Exception
      */
     public function findPositionUsingAim($data)

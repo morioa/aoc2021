@@ -21,13 +21,16 @@ class Day10 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile));
+            $this->init($part, $this->loadData($dataFile));
             $this->parseChunks();
         } catch (Exception $e) {
             $this->log($e);
@@ -37,10 +40,12 @@ class Day10 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
         $this->data = $data;
         $this->bounds = [
@@ -71,9 +76,14 @@ class Day10 extends Common
         ];
         //$this->log(['data' => $this->data, 'bounds' => $this->bounds]);
 
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
+    /**
+     * Parse the chunks and calculate the scores
+     * @return void
+     * @throws Exception
+     */
     public function parseChunks()
     {
         $syntaxErrors = [

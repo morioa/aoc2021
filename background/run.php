@@ -22,19 +22,61 @@ class Run
     protected string $assetsPath;
     protected array $days;
     protected string $daysRange;
-    protected string $input;
+    protected array $parts = [1, 2];
+    protected string $mode = 'command';
+
+    protected int $day = 0;
+    protected int $part = 0;
+
+    protected string $srcBaseClass;
+    protected string $srcClass;
+    protected string $srcClassFile;
+
+    protected string $dataFile;
+    protected array $commands = [
+        'help' => [
+            'alias' => 'h',
+            'desc' => 'Shows this help.',
+        ],
+        'days' => [
+            'alias' => 'd',
+            'desc' => 'Shows available days for run and test commands.',
+        ],
+        'run' => [
+            'alias' => 'r',
+            'desc' => 'Run process for the specified day (number) and part (number 1 or 2) using real data.',
+            'args' => '[DAY] [PART]',
+        ],
+        'test' => [
+            'alias' => 't',
+            'desc' => 'Run process for the specified day (number) and part (number 1 or 2) using test data.',
+            'args' => '[DAY] [PART]',
+        ],
+        'int' => [
+            'alias' => 'i',
+            'desc' => 'Switch to interactive mode.',
+        ],
+        'quit' => [
+            'alias' => 'q',
+            'desc' => 'Terminate the application.',
+        ],
+    ];
 
     /**
      * Run constructor
+     * @throws Exception
      */
     public function __construct()
     {
         $this->showTitle();
+        $this->showHelp();
         $this->init();
     }
 
     /**
      * Initialize class member variables
+     * @return void
+     * @throws Exception
      */
     public function init()
     {
@@ -48,6 +90,16 @@ class Run
             return $match['day'];
         }, glob($this->srcPath . 'Day*.php'));
         sort($this->days, SORT_NUMERIC);
+
+        // Prepare day range output for user input
+        $daysCount = count($this->days);
+        if ($daysCount === 0) {
+            throw new Exception('No days available to run');
+        } elseif ($daysCount === 1) {
+            $this->daysRange = $this->days[0];
+        } else {
+            $this->daysRange = "{$this->days[0]}-{$this->days[$daysCount - 1]}";
+        }
     }
 
     /**
@@ -56,93 +108,266 @@ class Run
     public function start()
     {
         try {
-            // Prepare day range output for user input
-            $daysCount = count($this->days);
-            if ($daysCount === 0) {
-                throw new Exception('No days available to run');
-            } elseif ($daysCount === 1) {
-                $this->daysRange = $this->days[0];
+            if ($this->mode === 'command') {
+                $this->getCommandInputs();
             } else {
-                $this->daysRange = "{$this->days[0]}-{$this->days[$daysCount - 1]}";
+                $this->setSrcVars();
+                $this->setDataVars();
             }
 
-            // Get user input for day to run
-            $this->getDayInput();
-
-            // Check existence of day source file
-            $dayBaseClass = "Day{$this->input}";
-            $dayClass = "AoC2021\\{$dayBaseClass}";
-            $dayFile = $this->srcPath . "{$dayBaseClass}.php";
-            if (!file_exists($dayFile)) {
-                print "\nMissing source file: \"{$dayFile}\"";
-                throw new Exception('Target source file does not exist');
+            if ($this->mode !== 'command') {
+                $this->run();
             }
 
-            // Get user input for test data
-            $this->getTestInput();
-
-            // Check existence of day data file
-            $dayDataFile = $this->assetsPath . "{$dayBaseClass}_{$this->input}input.txt";
-            if (!file_exists($dayDataFile)) {
-                print "\nMissing data file: \"{$dayDataFile}\"";
-                throw new Exception('Target data file does not exist');
-            }
-
-            // Include day source file and run
-            require_once $dayFile;
-            $day = new $dayClass;
-            $day->run($dayDataFile);
-
-            // Get user input for restart
-            $this->getRestartInput();
+            $this->restart();
         } catch (Exception $e) {
             die("\nException caught: {$e->getMessage()}\n");
         }
     }
 
+    /**
+     * Restart application
+     * @return void
+     * @throws Exception
+     */
+    public function restart()
+    {
+        $this->day = 0;
+        $this->part = 0;
+
+        if ($this->mode === 'command') {
+            $this->start();
+        } else {
+            $this->getRestartInput();
+        }
+    }
+
+    /**
+     * Display title to screen
+     * @return void
+     * @throws Exception
+     */
     public function showTitle()
     {
-        print EscapeColors::fg_color(TITLE_FG_COLOR, PROJECT_TITLE);
+        print EscapeColors::fg_color(TITLE_FG_COLOR, PROJECT_TITLE) . "\n";
+    }
+
+    /**
+     * Get user command inputs
+     * @param bool $showHelp
+     * @return void
+     * @throws Exception
+     */
+    public function getCommandInputs(bool $showHelp = false)
+    {
+        if ($showHelp) {
+            $this->showHelp();
+        }
+
+        print EscapeColors::fg_color(PROMPT_FG_COLOR, "\n> ");
+        $inputs = preg_split('/\s+/', trim(fgets(STDIN)));
+
+        $command = $inputs[0];
+        $day = $inputs[1] ?? 0;
+        $part = $inputs[2] ?? 0;
+        //print_r(['command' => $command, 'day' => $day, 'part' => $part]);
+
+        if (!in_array($command, array_merge(array_keys($this->commands), array_column($this->commands, 'alias')))) {
+            $this->inputError('Invalid command specified');
+        } else {
+            switch ($command) {
+                case 'h':
+                case 'help':
+                    $this->showHelp();
+                    break;
+
+                case 'd':
+                case 'days':
+                    print "Available days: {$this->daysRange}\n";
+                    $this->start();
+                    break;
+
+                case 'r':
+                case 'run':
+                    $this->setSrcVars($day);
+                    $this->setPartVar($part);
+                    $this->setDataVars(false);
+                    $this->run();
+                    break;
+
+                case 't':
+                case 'test':
+                    $this->setSrcVars($day);
+                    $this->setPartVar($part);
+                    $this->setDataVars(true);
+                    $this->run();
+                    break;
+
+                case 'i':
+                case 'int':
+                    $this->mode = 'interactive';
+                    $this->start();
+                    break;
+
+                case 'q':
+                case 'quit':
+                    exit(0);
+
+                default:
+                    $this->inputError("Invalid command entry: {$command}");
+            }
+        }
+    }
+
+    /**
+     * Trigger run method for target source
+     * @return void
+     */
+    public function run()
+    {
+        // Include day source file and run
+        require_once $this->srcClassFile;
+        $day = new $this->srcClass;
+        $day->run($this->srcDataFile, $this->part);
+    }
+
+    /**
+     * Show the help details
+     * @return void
+     * @throws Exception
+     */
+    public function showHelp()
+    {
+        $help = <<<HELP
+This is a PHP approach to handling the Advent of Code 2021 challenge puzzles.
+
+Commands:
+
+HELP;
+        foreach ($this->commands as $command => $commandDetails) {
+            $alias = $commandDetails['alias'] ?? '';
+            $args = $commandDetails['args'] ?? '';
+            $desc = $commandDetails['desc'];
+
+            $commandUnformatted = $command;
+            $aliasUnformatted = ($alias != '')
+                ? "{$alias}, "
+                : '';
+            $argsUnformatted = ($args != '')
+                ? " {$args}"
+                : '';
+
+            $commandFormatted = EscapeColors::fg_color('bold_green', $command);
+            $aliasFormatted = ($alias !== '')
+                ? EscapeColors::fg_color('bold_green', $alias) . ', '
+                : '';
+            $argsFormatted = ($args !== '')
+                ? ' ' . EscapeColors::fg_color('yellow', $args)
+                : '';
+
+            $unformattedConcat = $aliasUnformatted . $commandUnformatted . $argsUnformatted;
+            $spacer = str_repeat(' ', 24 - strlen($unformattedConcat));
+
+            $formattedConcat = $aliasFormatted . $commandFormatted . $argsFormatted;
+            $help .= $formattedConcat . $spacer . "{$desc}\n";
+        }
+
+        print "{$help}";
+    }
+
+    /**
+     * Set class member variables related to source
+     * @param $day
+     * @return void
+     * @throws Exception
+     */
+    public function setSrcVars($day = null)
+    {
+        $day = $day ?? $this->getDayInput();
+        if (!in_array($day, $this->days)) {
+            $this->inputError("Invalid day entry: {$day}");
+        } else {
+            $this->day = $day;
+        }
+
+        // Check existence of day source file
+        $this->srcBaseClass = "Day{$this->day}";
+        $this->srcClass = "AoC2021\\{$this->srcBaseClass}";
+        $this->srcClassFile = $this->srcPath . "{$this->srcBaseClass}.php";
+        if (!file_exists($this->srcClassFile)) {
+            $this->inputError("Missing source file: \"{$this->srcClassFile}\"");
+        }
+    }
+
+    /**
+     * Set class member variables related to data
+     * @param $isTest
+     * @return void
+     * @throws Exception
+     */
+    public function setDataVars($isTest = null)
+    {
+        $isTest = $isTest ?? $this->getTestInput();
+        $testStr = ($isTest) ? 'test' : '';
+
+        // Check existence of day data file
+        $this->srcDataFile = $this->assetsPath . "{$this->srcBaseClass}_{$testStr}input.txt";
+        if (!file_exists($this->srcDataFile)) {
+            $this->inputError("Missing data file: \"{$this->srcDataFile}\"");
+        }
+    }
+
+    /**
+     * Set class member variable for part
+     * @param $part
+     * @return void
+     * @throws Exception
+     */
+    public function setPartVar($part)
+    {
+        if (!in_array($part, $this->parts)) {
+            $this->inputError("Invalid part entry: {$part}");
+        }
+
+        $this->part = $part;
     }
 
     /**
      * Request day value from user
+     * @return string|void
      * @throws Exception
      */
     public function getDayInput()
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWhich day would you like to run? ({$this->daysRange}) : ");
-        $handle = fopen('php://stdin', 'r');
-        $input = trim(fgets($handle));
+        $input = trim(fgets(STDIN));
         if (!in_array($input, $this->days)) {
-            $this->inputError('Invalid day specified');
+            $this->inputError("Invalid day entry: {$input}");
         } else {
-            $this->input = $input;
+            return $input;
         }
     }
 
     /**
      * Request test value from user
+     * @return bool|void
      * @throws Exception
      */
     public function getTestInput()
     {
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nDo you want to use test data? (y/n) : ");
-        $handle = fopen('php://stdin', 'r');
-        $input = trim(fgets($handle));
+        $input = trim(fgets(STDIN));
 
         switch ($input) {
             case 'y':
             case 'yes':
                 print EscapeColors::fg_color('yellow', ">> Using test data\n");
-                $this->input = 'test';
-                break;
+                return true;
 
             case 'n':
             case 'no':
                 print EscapeColors::fg_color('yellow', ">> Using real data\n");
-                $this->input = '';
-                break;
+                return false;
 
             default:
                 $this->inputError('Invalid entry');
@@ -151,14 +376,14 @@ class Run
 
     /**
      * Get restart value from user
+     * @return void
      * @throws Exception
      */
     public function getRestartInput()
     {
         print EscapeColors::fg_color('dark_gray', "\n" . str_repeat('=', 80) . "\n");
         print EscapeColors::fg_color(PROMPT_FG_COLOR, "\nWould you like to run again? (y/n) : ");
-        $handle = fopen('php://stdin', 'r');
-        $input = strtolower(trim(fgets($handle)));
+        $input = strtolower(trim(fgets(STDIN)));
 
         switch ($input) {
             case 'y':
@@ -185,13 +410,22 @@ class Run
     {
         $func = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
 
-        print EscapeColors::fg_color('bold_red', "\n>> {$msg} [{$func}]\n");
+        $this->showError($msg, $func);
 
         if (!$requestAgain) {
             exit(1);
         }
 
-        $this->$func();
+        if ($this->mode === 'command') {
+            $this->start();
+        } else {
+            $this->$func();
+        }
+    }
+
+    public function showError($msg, $func)
+    {
+        print EscapeColors::fg_color('bold_red', ">> {$msg} [{$func}]\n");
     }
 }
 

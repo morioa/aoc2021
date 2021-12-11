@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e9fc7fa254324afb5faa29631c370db",
+    "content-hash": "9e37fe8f44d0084a251dd009609d7ee0",
     "packages": [
         {
             "name": "box/bart",
@@ -61,6 +61,20 @@
                 "source": "https://github.com/box/bart/tree/master"
             },
             "time": "2014-03-25T22:19:38+00:00"
+        },
+        {
+            "name": "phpclasses/cli-input",
+            "version": "0.4",
+            "dist": {
+                "type": "zip",
+                "url": "https://www.phpclasses.org/install/package/cli-input.zip"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "CLIInput.class.php"
+                ]
+            }
         }
     ],
     "packages-dev": [],

@@ -18,15 +18,18 @@ class Day3 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $data = $this->loadData($dataFile);
 
-            $this->init();
+            $this->init($part);
 
             $func = ($this->part === 1)
                 ? 'calcPowerConsumption'
@@ -40,16 +43,19 @@ class Day3 extends Common
 
     /**
      * Initialize class member variables
+     * @param $part
+     * @return void
      * @throws Exception
      */
-    public function init()
+    public function init($part)
     {
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
     /**
      * Calculate the power consumption by finding gamma and epsilon values
      * @param $data
+     * @return void
      * @throws Exception
      */
     public function calcPowerConsumption($data)
@@ -89,6 +95,7 @@ class Day3 extends Common
     /**
      * Calculate live support rating by determining O2
      * @param $data
+     * @return void
      * @throws Exception
      */
     public function calcLifeSupportRating($data)

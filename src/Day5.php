@@ -21,15 +21,18 @@ class Day5 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $data = $this->loadData($dataFile);
 
-            $this->init($data);
+            $this->init($part, $data);
             $this->convertLinesToPoints();
             $this->countIntersectPoints();
         } catch (Exception $e) {
@@ -40,12 +43,14 @@ class Day5 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
-        $this->getPartInput();
+        $this->setPart($part);
 
         $hvLinesOnly = ($this->part === 1);
 
@@ -73,6 +78,8 @@ class Day5 extends Common
     /**
      * Loop through line coordinates and convert lines to point coordinates
      * and keep track of how many times a point has been encountered
+     * @return void
+     * @throws Exception
      */
     public function convertLinesToPoints()
     {
@@ -129,6 +136,7 @@ class Day5 extends Common
      * Increment the counter for the target point
      * @param $x
      * @param $y
+     * @return void
      */
     public function incrementPointCoordCounter($x, $y)
     {
@@ -142,6 +150,8 @@ class Day5 extends Common
 
     /**
      * Count the number of points that have been used by more than one line
+     * @return void
+     * @throws Exception
      */
     public function countIntersectPoints()
     {

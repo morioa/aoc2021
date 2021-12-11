@@ -18,15 +18,18 @@ class Day1 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
             $data = $this->loadData($dataFile);
 
-            $this->init();
+            $this->init($part);
 
             $func = ($this->part === 1)
                 ? 'countDepthIncreases'
@@ -40,11 +43,13 @@ class Day1 extends Common
 
     /**
      * Initialize class member variables
+     * @param $part
+     * @return void
      * @throws Exception
      */
-    public function init()
+    public function init($part)
     {
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
     /**

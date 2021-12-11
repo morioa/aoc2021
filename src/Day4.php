@@ -22,13 +22,16 @@ class Day4 extends Common
     /**
      * Run method executed at script start
      * @param $dataFile
+     * @param $part
+     * @return void
+     * @throws Exception
      */
-    public function run($dataFile)
+    public function run($dataFile, $part = null)
     {
         try {
             $this->log('Started ' . (new ReflectionClass($this))->getShortName());
 
-            $this->init($this->loadData($dataFile, "\n\n"));
+            $this->init($part, $this->loadData($dataFile, "\n\n"));
             $this->draw($this->part === 1);
             $this->calcFinalScore();
         } catch (Exception $e) {
@@ -39,10 +42,12 @@ class Day4 extends Common
 
     /**
      * Initialize data into class member variables
+     * @param $part
      * @param $data
+     * @return void
      * @throws Exception
      */
-    public function init($data)
+    public function init($part, $data)
     {
         $this->numbers = [
             'drawOrder' => explode(',', array_shift($data)),
@@ -84,14 +89,15 @@ class Day4 extends Common
         //$this->log(['Numbers' => $this->numbers]);
         //$this->log(['Boards' => $this->boards]);
 
-        $this->getPartInput();
+        $this->setPart($part);
     }
 
     /**
      * Loop through numbers in draw order and determine winner
-     * @param false $stopOnFirstWin
+     * @param bool $stopOnFirstWin
+     * @return void
      */
-    public function draw($stopOnFirstWin = false)
+    public function draw(bool $stopOnFirstWin = false)
     {
         $boardsCount = count($this->boards);
 
@@ -123,6 +129,8 @@ class Day4 extends Common
 
     /**
      * Calculate the final score for the winner
+     * @return void
+     * @throws Exception
      */
     public function calcFinalScore()
     {
