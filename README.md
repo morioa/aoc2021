@@ -31,3 +31,7 @@ Completion status:
 | [Day 9: Smoke Basin](https://adventofcode.com/2021/day/9)               | [Day9.php](src/Day9.php)   | ☆      | ☆      |
 | [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10)          | [Day10.php](src/Day10.php) | ☆      | ☆      |
 | [Day 11: Dumbo Octopus](https://adventofcode.com/2021/day/11)           | [Day11.php](src/Day11.php) |        |        |
+| [Day 12: Passage Pathing](https://adventofcode.com/2021/day/12)         | [Day12.php](src/Day12.php) |        |        |
+| [Day 13: Transparent Origami](https://adventofcode.com/2021/day/13)     | [Day13.php](src/Day13.php) | ☆      | ☆      |
+| [Day 14: Extended Polymerization](https://adventofcode.com/2021/day/14) | [Day14.php](src/Day14.php) |        |        |
+| [Day 15: Chiton](https://adventofcode.com/2021/day/15)                  | [Day15.php](src/Day15.php) |        |        |
