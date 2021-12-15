@@ -13,9 +13,9 @@ use ReflectionClass;
 class Day14 extends Common
 {
     const PART_1_TEST_RESULT = 1588;
-    const PART_2_TEST_RESULT = 0;
+    const PART_2_TEST_RESULT = 2188189693529;
     const PART_1_STEPS = 10;
-    const PART_2_STEPS = 0;
+    const PART_2_STEPS = 40;
 
     protected array $data;
 
@@ -65,9 +65,37 @@ class Day14 extends Common
     public function growPolymer()
     {
         $steps = constant(__CLASS__ . "::PART_{$this->part}_STEPS");
+        for ($i = 0; $i < $steps; $i++) {
+            $newTemplate = '';
+            $templateLen = strlen($this->data['template']);
+            for ($j = 0; $j < ($templateLen - 1); $j++) {
+                $checkStr = substr($this->data['template'], $j, 2);
+                $appendStr = (isset($this->data['pairs'][$checkStr]))
+                    ? substr_replace($checkStr, $this->data['pairs'][$checkStr], 1, 1)
+                    : substr($checkStr, 0, 1);
+                //$this->log(['checkStr' => $checkStr, 'appendStr' => $appendStr]);
+                $newTemplate .= $appendStr;
+            }
+            $newTemplate .= substr($this->data['template'], -1);
+            //$this->log(['old template' => $this->data['template'], 'old template length' => $templateLen, 'new template' => $newTemplate]);
+            $this->data['template'] = $newTemplate;
+        }
 
+        $chars = [];
+        for ($i = 0; $i < strlen($this->data['template']); $i++) {
+            $char = substr($this->data['template'], $i, 1);
+            if (!isset($chars[$char])) {
+                $chars[$char] = 1;
+            } else {
+                $chars[$char] += 1;
+            }
+        }
+        arsort($chars, SORT_NUMERIC);
+        $mostCommon = array_shift($chars);
+        $leastCommon = array_pop($chars);
 
-        $calc = 0; // count most common - count least common
+        $calc = $mostCommon - $leastCommon; // count most common - count least common
+        $this->log("Calculation result: {$calc}");
 
         if ($this->isTest) {
             $this->compareResults(__CLASS__, $this->part, $calc);

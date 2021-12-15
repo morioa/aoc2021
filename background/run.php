@@ -24,6 +24,7 @@ class Run
     protected string $daysRange;
     protected array $parts = [1, 2];
     protected string $mode = 'command';
+    protected bool $audible = false;
 
     protected int $day = 0;
     protected int $part = 0;
@@ -59,6 +60,10 @@ class Run
         'int' => [
             'alias' => 'i',
             'desc' => 'Switch to interactive mode.',
+        ],
+        'audible' => [
+            'alias' => 'a',
+            'desc' => 'Toggle on/off audible alerts for execution completion.',
         ],
         'quit' => [
             'alias' => 'q',
@@ -104,6 +109,10 @@ class Run
         } else {
             $this->daysRange = "{$this->days[0]}-{$this->days[$daysCount - 1]}";
         }
+
+        $this->showDays();
+        $this->showParts();
+        $this->showAudibleStatus();
     }
 
     /**
@@ -212,6 +221,12 @@ class Run
                     $this->start();
                     break;
 
+                case 'a':
+                case 'audible':
+                    $this->audible = (!$this->audible);
+                    $this->showAudibleStatus();
+                    break;
+
                 case 'q':
                 case 'quit':
                     exit(0);
@@ -232,6 +247,7 @@ class Run
         require_once $this->srcClassFile;
         $day = new $this->srcClass;
         $day->run($this->srcDataFile, $this->part);
+        $this->beep();
     }
 
     /**
@@ -255,8 +271,8 @@ class Run
 This is a PHP approach to handling the Advent of Code 2021 challenge puzzles.
 
 Commands:
-%s
 
+%s
 Example commands:
 
 %s
@@ -336,6 +352,17 @@ HELP;
     public function showParts()
     {
         print 'Available parts: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, implode('-', $this->parts)) . "\n";
+    }
+
+    /**
+     * Display audible status
+     * @return void
+     * @throws Exception
+     */
+    public function showAudibleStatus()
+    {
+        $audibleVerbose = ($this->audible) ? 'on' : 'off';
+        print 'Audible alerts: ' . EscapeColors::fg_color(LOG_DEBUG_FG_COLOR, $audibleVerbose) . "\n";
     }
 
     /**
@@ -490,6 +517,13 @@ HELP;
     {
         //print EscapeColors::fg_color(LOG_ERROR_FG_COLOR, ">> {$msg} [{$func}]\n");
         print EscapeColors::fg_color(LOG_ERROR_FG_COLOR, ">> {$msg}\n");
+    }
+
+    function beep()
+    {
+        if ($this->audible) {
+            fprintf(STDOUT, '%s', "\x07");
+        }
     }
 }
 
