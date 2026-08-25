@@ -1,3 +1,4 @@
+#!/usr/local/bin/php
 <?php
 /**
  * Background script to execute AoC 2021 challenges

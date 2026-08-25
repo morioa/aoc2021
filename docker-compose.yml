@@ -1,0 +1,16 @@
+services:
+    app:
+        build: .
+        stdin_open: true
+        tty: true
+        working_dir: /app
+        volumes:
+            - .:/app
+
+    composer:
+        restart: "no"
+        image: composer:latest
+        working_dir: /app
+        command: install
+        volumes:
+            - .:/app

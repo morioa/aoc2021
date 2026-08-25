@@ -17,6 +17,20 @@ Start the application via the command below and follow the on-screen prompts:
 > php background/run.php
 ```
 
+### Running with Docker
+
+If you don't have PHP or Composer installed locally, you can run everything through Docker instead. Install [Docker](https://www.docker.com) and Docker Compose, then from the repo root:
+
+```
+> docker compose run --rm composer
+```
+
+installs the vendor libraries into `vendor/` (re-run this whenever `composer.json`/`composer.lock` change). Then start the application and follow the on-screen prompts the same as running it locally:
+
+```
+> docker compose run --rm app
+```
+
 Completion status:
 | Challenge                                                               | Source                     | Part 1 | Part 2 |
 | :---------------------------------------------------------------------- | :------------------------- | :----: | :----: |
